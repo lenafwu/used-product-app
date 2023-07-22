@@ -1,26 +1,61 @@
 // dependencies
+
 const express = require("express");
 const path = require("path");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
+const passport = require("passport");
+const cors = require("cors");
 
 // routes
 const indexRouter = require("./routes/index");
 const usersRouter = require("./routes/users");
+const apiRouter = require("./routes/api");
 
 const app = express();
 
 app.use(logger("dev"));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
+//app.use(express.urlencoded({ extended: false }));
+
+// test
+app.use((req, res, next) => {
+  console.log(req.headers);
+  console.log(req.body);
+  next();
+});
+
+// TODO: to be commented out
+//app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
-app.use("/", indexRouter);
-app.use("/users", usersRouter);
+// enable CORS
+app.use(cors());
 
-// connect to MongoDB
-const connectDB = require("./config/db");
-connectDB();
+// set up passport
+app.use(passport.initialize());
+
+// TODO: default landing page
+app.get("/", (req, res) => {
+  res.send("Page under construction");
+});
+
+app.use("/api", apiRouter);
+
+// // catch 404 and forward to error handler
+// app.use((req, res, next) => {
+//   next(createError(404));
+// });
+
+// error handler
+app.use((err, req, res, next) => {
+  console.log(err);
+  res.status(err.status || 500);
+  res.json({
+    errors: {
+      message: err.message,
+    },
+  });
+});
 
 module.exports = app;
