@@ -8,7 +8,7 @@ const authenticateToken = (req, res, next) => {
     // If token is not present, user is unauthorized
     return res.status(401).json({
       success: false,
-      message: "Unauthorized. Please log in to access this resource.",
+      message: "No token.",
     });
   }
 
@@ -18,7 +18,7 @@ const authenticateToken = (req, res, next) => {
       // If token is invalid, user is unauthorized
       return res.status(401).json({
         success: false,
-        message: "Unauthorized. Please log in to access this resource.",
+        message: "Token is invalid.",
       });
     }
 

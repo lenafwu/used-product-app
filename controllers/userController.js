@@ -1,7 +1,6 @@
 const User = require("../models/userModel");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
-const passport = require("passport");
 
 // error message
 const getErrorMessage = (err) => {
@@ -24,25 +23,6 @@ const getErrorMessage = (err) => {
   return message;
 };
 
-// helper function for guard purposes
-// const requireAuth = (req, res, next) => {
-//   // check if the user is logged in
-//   passport.authenticate("tokencheck", { session: false }, (err, user, info) => {
-//     if (err)
-//       return res.status(401).json({
-//         success: false,
-//         message: getErrorMessage(err),
-//       });
-//     if (info)
-//       return res.status(401).json({
-//         success: false,
-//         message: info.message,
-//       });
-//     req.payload = payload;
-//     next();
-//   })(req, res, next);
-// };
-
 const signin = async (req, res, next) => {
   const user = await User.findOne({ username: req.body.username });
   if (!user) {
@@ -51,6 +31,7 @@ const signin = async (req, res, next) => {
       message: "User not found.",
     });
   }
+    
   // verify password
   const validPassword = user.authenticate(req.body.password);
   if (!validPassword) {

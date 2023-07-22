@@ -29,9 +29,18 @@ const getUserProfile = async (req, res, next) => {
 
 const updateUserProfile = async (req, res, next) => {
   try {
-    const updatedUser = await User.findByIdAndUpdate(req.user._id, req.body, {
-      new: true,
-    });
+    const { email, phone, firstname, lastname, address } = req.body;
+    const updatedUser = await User.findByIdAndUpdate(
+      req.user._id,
+      {
+        email,
+        phone,
+        firstname,
+        lastname,
+        address,
+      },
+      { new: true }
+    );
 
     return res.json({
       success: true,
@@ -44,6 +53,8 @@ const updateUserProfile = async (req, res, next) => {
         address: updatedUser.address,
         email: updatedUser.email,
         phone: updatedUser.phone,
+        isAdmin: updatedUser.isAdmin,
+        created: updatedUser.created,
       },
     });
   } catch (err) {
