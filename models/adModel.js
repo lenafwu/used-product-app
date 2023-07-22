@@ -1,5 +1,19 @@
 const mongoose = require("mongoose");
 
+const QuestionSchema = new mongoose.Schema({
+  title: {
+    type: String,
+    required: [true, "Please provide question title"],
+  },
+  description: {
+    type: String,
+    required: [true, "Please provide question description"],
+  },
+  answer: {
+    type: String,
+  },
+});
+
 const AdSchema = new mongoose.Schema({
   title: {
     type: String,
@@ -21,14 +35,17 @@ const AdSchema = new mongoose.Schema({
   startDate: {
     type: Date,
     default: Date.now,
+    required: [true, "Please provide a start date"],
   },
   expiryDate: {
     type: Date,
+    required: [true, "Please provide an expiry date"],
   },
   isActive: {
     type: Boolean,
     default: true,
   },
+  questions: [QuestionSchema],
 });
 
 module.exports = mongoose.model("Ad", AdSchema);
