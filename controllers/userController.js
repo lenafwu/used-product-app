@@ -31,7 +31,7 @@ const signin = async (req, res, next) => {
       message: "User not found.",
     });
   }
-    
+
   // verify password
   const validPassword = user.authenticate(req.body.password);
   if (!validPassword) {
@@ -50,7 +50,7 @@ const signin = async (req, res, next) => {
   });
   return res.json({
     success: true,
-    token: "Bearer " + token,
+    accessToken: token,
   });
 };
 
@@ -68,7 +68,10 @@ const signup = async (req, res, next) => {
     const token = jwt.sign(payload, process.env.JWT_SECRET, {
       expiresIn: "1h",
     });
-    res.json({ token });
+    res.json({
+      success: true,
+      accessToken: token,
+    });
   } catch (err) {
     return res.status(400).json({
       success: false,

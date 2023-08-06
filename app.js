@@ -19,7 +19,7 @@ app.use(logger("dev"));
 app.use(express.json());
 //app.use(express.urlencoded({ extended: false }));
 
-// test
+// TODO: delete this : test
 app.use((req, res, next) => {
   console.log(req.headers);
   console.log(req.body);

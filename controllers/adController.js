@@ -4,7 +4,7 @@ const Ad = require("../models/adModel");
 const getAllAds = async (req, res, next) => {
   // get all ads
   try {
-    const ads = await Ad.find();
+    const ads = await Ad.find().sort({ _id: -1 });
     return res.json({
       success: true,
       ads,

@@ -13,24 +13,24 @@ const UserSchema = new mongoose.Schema({
   },
   email: {
     type: String,
-    required: [true, "Please provide an email"],
+    //  required: [true, "Please provide an email"],
   },
   phone: {
     type: String,
-    required: [true, "Please provide a phone number"],
+    //  required: [true, "Please provide a phone number"],
   },
   firstname: {
     type: String,
-    required: [true, "Please provide a firstname"],
+    //    required: [true, "Please provide a firstname"],
   },
   lastname: {
     type: String,
-    required: [true, "Please provide a lastname"],
+    //    required: [true, "Please provide a lastname"],
   },
 
   address: {
     type: String,
-    required: [true, "Please provide an address"],
+    //   required: [true, "Please provide an address"],
   },
   password: {
     type: String,
