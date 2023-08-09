@@ -66,6 +66,7 @@ const signin = async (req, res, next) => {
   // note: to improve security, store JWTs in cookies with httpOnly flag set to true
   // instead of storing in localStorage or memory
   // to set cookies in Chrome, must set sameSite to "none" and secure to true
+  // FIXME: cannot set cookies on browsers, ok on Postman
   console.log("===> Setting cookies");
   res.cookie("jwt", refreshToken, {
     httpOnly: true,

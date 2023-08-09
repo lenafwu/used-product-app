@@ -5,12 +5,24 @@ const getAllAds = async (req, res, next) => {
   // get all ads
   try {
     const ads = await Ad.find().sort({ _id: -1 });
+
+    const updatedAds = [];
+
+    for (let ad of ads) {
+      const user = await User.findById(ad.postedBy);
+
+      // Convert Mongoose document to plain object as document is immutable
+      // FIXME: this works but I don't feel it's the best way to do it
+      let adObject = ad.toObject();
+      adObject.postedBy = `${user.firstname} ${user.lastname}`;
+      updatedAds.push(adObject);
+    }
     return res.json({
       success: true,
-      ads,
+      ads: updatedAds,
     });
   } catch (err) {
-    console.log("err when getting all ads");
+    console.log("err when getting all ads" + err);
     return res.status(400).json({
       success: false,
       message: err,
