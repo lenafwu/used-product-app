@@ -9,6 +9,8 @@ router.post("/signup", userController.signup);
 
 router.post("/signin", userController.signin);
 
+router.get("/logout", userController.logout);
+
 router.get("/profile", authenticateToken, profileController.getUserProfile);
 
 router.post("/profile", authenticateToken, profileController.updateUserProfile);

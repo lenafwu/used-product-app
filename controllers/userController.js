@@ -2,6 +2,7 @@ const User = require("../models/userModel");
 const RefreshToken = require("../models/refreshTokenModel");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
+const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET;
 
 // error message
 const getErrorMessage = (err) => {
@@ -102,7 +103,23 @@ const signup = async (req, res, next) => {
   }
 };
 
+const logout = (req, res, next) => {
+  // note: to log out is to clear cookie and delete refresh token from DB
+
+  // on client, also delete the access token
+  const cookies = req.cookies;
+  if (!cookies?.jwt) return res.sendStatus(204); // no content to send back
+  const refresh_Token = cookies.jwt;
+
+  // check if refresh token is in DB
+  RefreshToken.deleteOne({ token: refresh_Token }); // if not in DB, user is already logged out, will not cause error here
+
+  // clear cookie
+  res.clearCookie("jwt", { httpOnly: true });
+  return res.sendStatus(204);
+};
 module.exports = {
   signin,
   signup,
+  logout,
 };
