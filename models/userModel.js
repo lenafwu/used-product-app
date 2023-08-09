@@ -67,6 +67,7 @@ UserSchema.methods.hashPassword = function (password) {
     .pbkdf2Sync(password, this.salt, 10000, 512, "sha512")
     .toString("base64");
 };
+
 // pre-save hook to hash password
 UserSchema.pre("save", function (next) {
   if (this.password) {

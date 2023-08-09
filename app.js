@@ -26,9 +26,8 @@ app.use((req, res, next) => {
   next();
 });
 
-// TODO: to be commented out
-//app.use(cookieParser());
-app.use(express.static(path.join(__dirname, "public")));
+app.use(cookieParser());
+// app.use(express.static(path.join(__dirname, "public")));
 
 // enable CORS
 app.use(cors());
@@ -36,10 +35,9 @@ app.use(cors());
 // set up passport
 app.use(passport.initialize());
 
-// TODO: default landing page
-app.get("/", (req, res) => {
-  res.send("Page under construction");
-});
+// app.get("/", (req, res) => {
+//   res.send("Page under construction");
+// });
 
 app.use("/api", apiRouter);
 app.use("/ad", adRouter);

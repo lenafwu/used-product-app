@@ -1,4 +1,5 @@
 const User = require("../models/userModel");
+const RefreshToken = require("../models/refreshTokenModel");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
@@ -41,16 +42,36 @@ const signin = async (req, res, next) => {
     });
   }
 
+  // create JWTs
   const payload = {
     _id: user._id,
     username: user.username,
   };
-  const token = jwt.sign(payload, process.env.JWT_SECRET, {
+  const accessToken = jwt.sign(payload, process.env.JWT_SECRET, {
+    expiresIn: "30s",
+  });
+
+  const refreshToken = jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET, {
     expiresIn: "1h",
   });
+
+  // save refreshToken in DB
+  const newRefreshToken = new RefreshToken({
+    token: refreshToken,
+    user: user._id,
+  });
+  await newRefreshToken.save();
+
+  // note: to improve security, store JWTs in cookies with httpOnly flag set to true
+  // instead of storing in localStorage or memory
+  res.cookie("jwt", refreshToken, {
+    httpOnly: true,
+    maxAge: 1000 * 60 * 60 * 24, // 1 day
+  });
+
   return res.json({
     success: true,
-    accessToken: token,
+    accessToken: accessToken,
   });
 };
 
@@ -66,9 +87,10 @@ const signup = async (req, res, next) => {
     };
 
     const token = jwt.sign(payload, process.env.JWT_SECRET, {
-      expiresIn: "1h",
+      expiresIn: "30s",
     });
-    res.json({
+
+    return res.json({
       success: true,
       accessToken: token,
     });
