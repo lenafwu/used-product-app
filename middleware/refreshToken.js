@@ -11,7 +11,6 @@ const refreshToken = async (req, res, next) => {
 
   // check if refresh token is in DB
   try {
-    // FIXME: for some reason, if not using asnyc function here, it doesn't return a document
     const foundToken = await RefreshToken.findOne({ token: refresh_Token });
 
     jwt.verify(refresh_Token, REFRESH_TOKEN_SECRET, (err, decodedToken) => {
@@ -25,11 +24,11 @@ const refreshToken = async (req, res, next) => {
         _id: decodedToken._id,
         username: decodedToken.username,
       };
-        
+
       const accessToken = jwt.sign(payload, process.env.JWT_SECRET, {
         expiresIn: "30s",
       });
-        
+
       return res.json({ success: true, accessToken });
     });
   } catch (err) {

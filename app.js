@@ -30,7 +30,12 @@ app.use(cookieParser());
 // app.use(express.static(path.join(__dirname, "public")));
 
 // enable CORS
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:3001", // FIXME: Replace with your frontend's origin
+    credentials: true,
+  })
+);
 
 // set up passport
 app.use(passport.initialize());
