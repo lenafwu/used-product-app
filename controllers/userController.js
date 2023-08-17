@@ -66,8 +66,8 @@ const signin = async (req, res, next) => {
   // note: to improve security, store JWTs in cookies with httpOnly flag set to true
   // instead of storing in localStorage or memory
   // to set cookies in Chrome, must set sameSite to "none" and secure to true
-  // FIXME: cannot set cookies on browsers, ok on Postman
   console.log("===> Setting cookies");
+  console.log(refreshToken);
   res.cookie("jwt", refreshToken, {
     httpOnly: true,
     sameSite: "none",
@@ -120,7 +120,8 @@ const logout = (req, res, next) => {
   RefreshToken.deleteOne({ token: refresh_Token }); // if not in DB, user is already logged out, will not cause error here
 
   // clear cookie
-  res.clearCookie("jwt", { httpOnly: true, sameSite: "none" });
+  res.clearCookie("jwt", { httpOnly: true, sameSite: "none", secure: true });
+  console.log("I deleted a cookie");
   return res.sendStatus(204);
 };
 module.exports = {

@@ -20,22 +20,26 @@ app.use(express.json());
 //app.use(express.urlencoded({ extended: false }));
 
 // TODO: delete this : test
-app.use((req, res, next) => {
-  console.log(req.headers);
-  console.log(req.body);
-  next();
-});
+// app.use((req, res, next) => {
+//   console.log(req.headers);
+//   console.log(req.body);
+//   next();
+// });
 
-app.use(cookieParser());
 // app.use(express.static(path.join(__dirname, "public")));
 
 // enable CORS
 app.use(
   cors({
-    origin: "http://localhost:3001", // FIXME: Replace with your frontend's origin
+    origin: [
+      "http://localhost:3001",
+      "https://react-used-product-app.lenafwu.repl.co",
+    ],
     credentials: true,
   })
 );
+
+app.use(cookieParser());
 
 // set up passport
 app.use(passport.initialize());

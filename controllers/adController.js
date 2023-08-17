@@ -4,22 +4,23 @@ const Ad = require("../models/adModel");
 const getAllAds = async (req, res, next) => {
   // get all ads
   try {
-    const ads = await Ad.find().sort({ _id: -1 });
+    const ads = await Ad.find().sort({ _id: -1 }).populate("postedBy");
 
-    const updatedAds = [];
+    // const updatedAds = [];
 
-    for (let ad of ads) {
-      const user = await User.findById(ad.postedBy);
+    // for (let ad of ads) {
+    //   const user = await User.findById(ad.postedBy);
 
-      // Convert Mongoose document to plain object as document is immutable
-      // FIXME: this works but I don't feel it's the best way to do it
-      let adObject = ad.toObject();
-      adObject.postedBy = `${user.firstname} ${user.lastname}`;
-      updatedAds.push(adObject);
-    }
+    //   // Convert Mongoose document to plain object as document is immutable
+    //   // FIXED: this works but I don't feel it's the best way to do it
+    //   // populate(): handle document references across collections
+    //   // let adObject = ad.toObject();
+    //   // adObject.postedBy = `${user.fullname}`;
+    //   // updatedAds.push(adObject);
+    // }
     return res.json({
       success: true,
-      ads: updatedAds,
+      ads,
     });
   } catch (err) {
     console.log("err when getting all ads" + err);
@@ -39,7 +40,7 @@ const getAdById = async (req, res, next) => {
       });
     }
 
-    const ad = await Ad.findById(req.params.id);
+    const ad = await Ad.findById(req.params.id).populate("postedBy");
     return res.json({
       success: true,
       ad,

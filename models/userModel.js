@@ -3,51 +3,58 @@ const crypto = require("crypto");
 
 /* User Schema */
 
-const UserSchema = new mongoose.Schema({
-  username: {
-    type: String,
-    unique: true,
-    trim: true,
-    required: [true, "Please provide a username"],
-    immutable: true,
-  },
-  email: {
-    type: String,
-    //  required: [true, "Please provide an email"],
-  },
-  phone: {
-    type: String,
-    //  required: [true, "Please provide a phone number"],
-  },
-  firstname: {
-    type: String,
-    //    required: [true, "Please provide a firstname"],
-  },
-  lastname: {
-    type: String,
-    //    required: [true, "Please provide a lastname"],
-  },
+const UserSchema = new mongoose.Schema(
+  {
+    username: {
+      type: String,
+      unique: true,
+      trim: true,
+      required: [true, "Please provide a username"],
+      immutable: true,
+    },
+    email: {
+      type: String,
+      //  required: [true, "Please provide an email"],
+    },
+    phone: {
+      type: String,
+      //  required: [true, "Please provide a phone number"],
+    },
+    firstname: {
+      type: String,
+      //    required: [true, "Please provide a firstname"],
+    },
+    lastname: {
+      type: String,
+      //    required: [true, "Please provide a lastname"],
+    },
 
-  address: {
-    type: String,
-    //   required: [true, "Please provide an address"],
+    address: {
+      type: String,
+      //   required: [true, "Please provide an address"],
+    },
+    password: {
+      type: String,
+      required: [true, "Please provide a password"],
+    },
+    created: {
+      type: Date,
+      default: Date.now,
+    },
+    isAdmin: {
+      type: Boolean,
+      default: false,
+    },
+    salt: {
+      type: String,
+    },
   },
-  password: {
-    type: String,
-    required: [true, "Please provide a password"],
-  },
-  created: {
-    type: Date,
-    default: Date.now,
-  },
-  isAdmin: {
-    type: Boolean,
-    default: false,
-  },
-  salt: {
-    type: String,
-  },
-});
+  {
+    toJSON: {
+      virtuals: true,
+    },
+  }
+);
 
 /* User Schema Methods */
 
