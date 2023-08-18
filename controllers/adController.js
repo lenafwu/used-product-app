@@ -4,7 +4,9 @@ const Ad = require("../models/adModel");
 const getAllAds = async (req, res, next) => {
   // get all ads
   try {
-    const ads = await Ad.find().sort({ _id: -1 }).populate("postedBy");
+    const ads = await Ad.find({ isActive: true })
+      .sort({ _id: -1 })
+      .populate("postedBy");
 
     // const updatedAds = [];
 
@@ -24,6 +26,23 @@ const getAllAds = async (req, res, next) => {
     });
   } catch (err) {
     console.log("err when getting all ads" + err);
+    return res.status(400).json({
+      success: false,
+      message: err,
+    });
+  }
+};
+
+const getAdsByUserId = async (req, res, next) => {
+  console.log("req.user: " + req.user);
+  try {
+    const ads = await Ad.find({ postedBy: req.user._id }).sort({ _id: -1 });
+    return res.json({
+      success: true,
+      ads,
+    });
+  } catch (err) {
+    console.log("err when getting ads by user id" + err);
     return res.status(400).json({
       success: false,
       message: err,
@@ -321,6 +340,7 @@ const deleteAnswer = async (req, res, next) => {
 
 module.exports = {
   getAllAds,
+  getAdsByUserId,
   getAdById,
   createAd,
   updateAd,

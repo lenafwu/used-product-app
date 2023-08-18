@@ -8,6 +8,9 @@ const authenticateToken = require("../middleware/authenticateToken");
 // get all ads
 router.get("/", adController.getAllAds);
 
+// get ads by user id
+router.get("/user", authenticateToken, adController.getAdsByUserId);
+
 // get ad by id
 router.get("/:id", adController.getAdById);
 

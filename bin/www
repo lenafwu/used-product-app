@@ -7,89 +7,110 @@
 const app = require("../app");
 const debug = require("debug")("used-product-app:server");
 const http = require("http");
+const https = require("https");
 const connectDB = require("../config/db");
 const configurePassport = require("../config/jwt");
+const fs = require("fs");
+require("dotenv").config();
 
 /** Connect to MongoDB */
 const db = connectDB();
 
-/**
- * Get port from environment and store in Express.
- */
+/* deployment on Oracle Cloud */
+if (process.env.NODE_ENV === "production") {
+  const privateKey = fs.readFileSync("key.pem", "utf8");
+  const certificate = fs.readFileSync("cert.pem", "utf8");
 
-const port = normalizePort(process.env.PORT || "3000");
-app.set("port", port);
+  const credentials = {
+    key: privateKey,
+    cert: certificate,
+  };
 
-/**
- * Create HTTP server.
- */
+  const server = https.createServer(credentials, app);
 
-const server = http.createServer(app);
+  server.listen(443, () => {
+    console.log("HTTPS Server running on port 443");
+  });
+} else {
+  /**
+   * Get port from environment and store in Express.
+   */
 
-/** Configure passport */
-const passport = configurePassport();
+  const port = normalizePort(process.env.PORT || "3000");
+  app.set("port", port);
 
-/**
- * Listen on provided port, on all network interfaces.
- */
+  /**
+   * Create HTTP server.
+   */
 
-server.listen(port);
-server.on("error", onError);
-server.on("listening", onListening);
+  const server = http.createServer(app);
 
-/**
- * Normalize a port into a number, string, or false.
- */
+  /** Configure passport */
+  const passport = configurePassport();
 
-function normalizePort(val) {
-  const port = parseInt(val, 10);
+  /**
+   * Listen on provided port, on all network interfaces.
+   */
 
-  if (isNaN(port)) {
-    // named pipe
-    return val;
+  server.listen(port);
+  server.on("error", onError);
+  server.on("listening", onListening);
+
+  /**
+   * Normalize a port into a number, string, or false.
+   */
+
+  function normalizePort(val) {
+    const port = parseInt(val, 10);
+
+    if (isNaN(port)) {
+      // named pipe
+      return val;
+    }
+
+    if (port >= 0) {
+      // port number
+      return port;
+    }
+
+    return false;
   }
 
-  if (port >= 0) {
-    // port number
-    return port;
-  }
+  /**
+   * Event listener for HTTP server "error" event.
+   */
 
-  return false;
-}
-
-/**
- * Event listener for HTTP server "error" event.
- */
-
-function onError(error) {
-  if (error.syscall !== "listen") {
-    throw error;
-  }
-
-  const bind = typeof port === "string" ? "Pipe " + port : "Port " + port;
-
-  // handle specific listen errors with friendly messages
-  switch (error.code) {
-    case "EACCES":
-      console.error(bind + " requires elevated privileges");
-      process.exit(1);
-      break;
-    case "EADDRINUSE":
-      console.error(bind + " is already in use");
-      process.exit(1);
-      break;
-    default:
+  function onError(error) {
+    if (error.syscall !== "listen") {
       throw error;
+    }
+
+    const bind = typeof port === "string" ? "Pipe " + port : "Port " + port;
+
+    // handle specific listen errors with friendly messages
+    switch (error.code) {
+      case "EACCES":
+        console.error(bind + " requires elevated privileges");
+        process.exit(1);
+        break;
+      case "EADDRINUSE":
+        console.error(bind + " is already in use");
+        process.exit(1);
+        break;
+      default:
+        throw error;
+    }
   }
-}
 
-/**
- * Event listener for HTTP server "listening" event.
- */
+  /**
+   * Event listener for HTTP server "listening" event.
+   */
 
-function onListening() {
-  const addr = server.address();
-  const bind = typeof addr === "string" ? "pipe " + addr : "port " + addr.port;
-  debug("Listening on " + bind);
-  console.log(`Server is running on port ${port}`);
+  function onListening() {
+    const addr = server.address();
+    const bind =
+      typeof addr === "string" ? "pipe " + addr : "port " + addr.port;
+    debug("Listening on " + bind);
+    console.log(`Server is running on port ${port}`);
+  }
 }
